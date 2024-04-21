@@ -4,6 +4,9 @@
         <div id="abcjs-container" style="pointer-events: none;">
             <div id="abcjs-svg" ref="svg"></div>
         </div>
+        <div id="button-container">
+            <div id="button" @click="play()">开始</div>
+        </div>
         <PasswordInput :value="value" :length="length - 1" :mask="false" :focused="true" />
     </div>
 </template>
@@ -39,38 +42,24 @@ const notes = Array(length.value).fill("")
 
 console.log(notes)
 
+const synth = new abcjs.synth.CreateSynth()
+const audio = new Audio()
+
+function play() {
+    audio.currentTime = 0
+    audio.play()
+}
+// const synthControl = new abcjs.synth.SynthController()
 onMounted(async () => {
-    // const notes = "B c d e|"
     const visualObj = abcjs.renderAbc(svg.value, `%%staffwidth 135\nL:1/1\n` + notes)
-    const synth = new abcjs.synth.CreateSynth()
+    // await synthControl.setTune(visualObj[0], false)
+    // synthControl.setWarp(2)
     await synth.init({ visualObj: visualObj[0] })
     await synth.prime()
-    synth.start()
+    audio.src = synth.download()
+    audio.playbackRate = 2
 })
-// const myContext = new AudioContext()
-// const visualObj = abcjs.renderAbc(svg.value, "X:1\nK:Bb\nB c d e\n")
-// const synth = new abcjs.synth.CreateSynth()
-// synth.init({
-//     audioContext: myContext,
-//     visualObj: visualObj[0],
-//     millisecondsPerMeasure: 500,
-//     options: {
-//         soundFontUrl: "https:/path/to/soundfont/folder",
-//         pan: [-0.3, 0.3]
-//     }
-// })
-//     .then(function (results) {
-//         // Ready to play. The results are details about what was loaded.
 
-//         synth.prime().then((response) => {
-//             console.log(response.status)
-
-//             synth.start()
-//         })
-//     })
-//     .catch(function (reason) {
-//         console.log(reason)
-//     })
 </script>
 
 <style scoped>
@@ -82,5 +71,32 @@ onMounted(async () => {
 
 #abcjs-svg {
     width: 200px;
+}
+
+#button-container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10vh;
+    margin-bottom: 5vh;
+}
+
+#button {
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    color: #ffffff;
+    background-color: #007bff;
+    cursor: pointer;
+    text-align: center;
+}
+
+#button::before {
+    display: inline-block;
+    content: "";
+    height: 100%;
+    vertical-align: middle;
 }
 </style>
