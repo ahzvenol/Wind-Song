@@ -22,13 +22,6 @@ router.beforeEach((to, from) => {
 </script>
 
 <style>
-@import url(./assets/reset.css);
-
-body,
-#app {
-    height: 100vh;
-}
-
 .slide-right-enter-active,
 .slide-right-leave-active,
 .slide-left-enter-active,
@@ -59,4 +52,5 @@ body,
 }
 </style>
 
-<style scoped></style>
+<style scoped>
+</style>

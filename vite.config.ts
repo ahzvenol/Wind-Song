@@ -18,6 +18,13 @@ export default defineConfig(({ command }) => ({
       "@": resolve(__dirname, "./src")
     }
   },
+  css: {
+    preprocessorOptions: {
+      less: {
+        math: "always"
+      }
+    }
+  },
   server: {
     port: 8888,
     strictPort: true
