@@ -2,7 +2,7 @@
     <div>
         <NavBar title="标题" left-arrow @click-left="router.back()" />
         <div id="abcjs-container" style="pointer-events: none;">
-            <div v-show="true" id="abcjs-empty" ref="empty">
+            <div v-show="inputColorMode === 0" id="abcjs-empty" ref="empty">
                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" role="img" fill="currentColor" stroke="currentColor"
                     aria-label="Sheet Music" width="209.55" height="94.617">
                     <title>Sheet Music</title>
@@ -33,33 +33,78 @@
                     </g>
                 </svg>
             </div>
-            <div v-show="false" id="abcjs-svg" ref="svg"></div>
+            <div v-show="inputColorMode !== 0" id="abcjs-svg" ref="svg"></div>
         </div>
         <div id="button-container">
             <div id="button" @click="play()">开始</div>
         </div>
         <div id="input-container">
-            <PasswordInput id="input" :value="value" :length="length - 1" :gutter="10" :mask="false" focused="true"/>
+            <PasswordInput id="input" :value="input" :length="length - 1" :gutter="10" :mask="false" :focused="true" />
         </div>
         <div class="key-wrapper">
-            <div class="key"></div>
+            <div id="key-container">
+                <div class="key" @click="() => { buttonInterceptor(() => answer.push(1)) }">↑</div>
+                <div class="key" @click="() => { buttonInterceptor(() => answer.push(0)) }">=</div>
+                <div class="key" @click="() => { buttonInterceptor(() => answer.push(-1)) }">↓</div>
+                <div class="key" @click="() => { buttonInterceptor(() => answer.pop()) }">
+                    <svg class="van-key__delete-icon" viewBox="0 0 32 22">
+                        <path
+                            d="M28 0a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H10.4a2 2 0 0 1-1.4-.6L1 13.1c-.6-.5-.9-1.3-.9-2 0-1 .3-1.7.9-2.2L9 .6a2 2 0 0 1 1.4-.6zm0 2H10.4l-8.2 8.3a1 1 0 0 0-.3.7c0 .3.1.5.3.7l8.2 8.4H28a2 2 0 0 0 2-2V4c0-1.1-.9-2-2-2zm-5 4a1 1 0 0 1 .7.3 1 1 0 0 1 0 1.4L20.4 11l3.3 3.3c.2.2.3.5.3.7 0 .3-.1.5-.3.7a1 1 0 0 1-.7.3 1 1 0 0 1-.7-.3L19 12.4l-3.4 3.3a1 1 0 0 1-.6.3 1 1 0 0 1-.7-.3 1 1 0 0 1-.3-.7c0-.2.1-.5.3-.7l3.3-3.3-3.3-3.3A1 1 0 0 1 14 7c0-.3.1-.5.3-.7A1 1 0 0 1 15 6a1 1 0 0 1 .6.3L19 9.6l3.3-3.3A1 1 0 0 1 23 6z"
+                            fill="currentColor"></path>
+                    </svg>
+                </div>
+            </div>
         </div>
-        <NumberKeyboard show="true"/>
+        <!-- <NumberKeyboard show="true" /> -->
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import abcjs from 'abcjs'
 import { NavBar } from 'vant'
-import { PasswordInput, NumberKeyboard } from 'vant'
+import { PasswordInput } from 'vant'
 import router from '@/router'
-import { getRandomInt, sliding } from '@/util'
+import { ArrayUtils, getRandomInt, sliding, withFilter } from '@/util'
 import { nodeCompare } from '@/util/abc'
 
 const svg = ref()
 // const empty = ref()
-const value = ref("AA")
+const input = ref("")
+
+const answer = reactive<Array<number>>([])
+
+const inputColorMode = ref(0)
+
+const inputColor = ref({ default: '#D6D6D6', focus: "#59A4E8" })
+
+const buttonInterceptor = withFilter(() => answer.length < 4 && inputColorMode.value === 0)
+
+watch(
+    inputColorMode,
+    () => {
+        if (inputColorMode.value === 1) {
+            inputColor.value = { default: '#377E21', focus: "#377E21" }
+        } else if (inputColorMode.value === -1) {
+            inputColor.value = { default: '#EA3322', focus: "#EA3322" }
+        }
+    }
+)
+
+watch(
+    () => answer,
+    () => {
+        input.value = answer.map(e => ({ 1: '↑', 0: '=', [-1]: '↓' }[e])).join("")
+        if (answer.length === 4) {
+            if (ArrayUtils.sameElements(answer, correctAnswer)) {
+                inputColorMode.value = 1
+            } else {
+                inputColorMode.value = -1
+            }
+        }
+    },
+    { deep: true }
+)
 
 const length = ref(5)
 
@@ -78,7 +123,7 @@ const notes = Array(length.value).fill("")
         return semitone + e + scale
     })
 
-console.log(notes)
+const correctAnswer = sliding(notes, 2).map(e => nodeCompare(e[0], e[1]))
 
 const synth = new abcjs.synth.CreateSynth()
 const audio = new Audio()
@@ -102,8 +147,6 @@ onMounted(async () => {
     audio.playbackRate = 2
 })
 
-console.log(sliding(notes, 2).map(e => nodeCompare(e[0], e[1])));
-
 </script>
 
 <style scoped lang="less">
@@ -111,15 +154,21 @@ console.log(sliding(notes, 2).map(e => nodeCompare(e[0], e[1])));
     display: inline-flex;
     justify-content: center;
     width: 100vw;
+
+    >div {
+        height: 160px !important;
+    }
+
+    #abcjs-empty {
+        width: 200px;
+    }
+
+    #abcjs-svg {
+        width: 200px;
+    }
+
 }
 
-#abcjs-empty {
-    width: 200px;
-}
-
-#abcjs-svg {
-    width: 200px;
-}
 
 #button-container {
     display: flex;
@@ -157,20 +206,44 @@ console.log(sliding(notes, 2).map(e => nodeCompare(e[0], e[1])));
         width: 270px;
     }
 
+    :deep(*) {
+        cursor: default !important;
+    }
+
     :deep(.van-password-input__item) {
-        // background-color: #F7F8FA;
-        // border: 1px solid rgb(#a6f3fa);
-        // box-shadow: 0px 0px 3px #007eff;
-        // border-radius: 5px;
-        border: 3px solid #D6D6D6;
+        border: 3px solid v-bind('inputColor.default');
         border-radius: 10px;
     }
 
     :deep(.van-password-input__item--focus) {
-
-        border: 3px solid #59A4E8;
+        border: 3px solid v-bind('inputColor.focus');
         border-radius: 10px;
     }
 
+}
+
+.key-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 75px;
+}
+
+#key-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 270px;
+}
+
+.key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #ECEDEC;
+    border-radius: 10px;
+    font-weight: bold;
 }
 </style>

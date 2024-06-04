@@ -1,7 +1,7 @@
 <template>
     <router-view v-slot="{ Component }">
         <transition :name="transition" mode="out-in">
-            <component :is="Component" :key="route.fullPath" />
+            <component :is="Component" :key="route.fullPath + route.query.t" />
         </transition>
     </router-view>
 </template>
@@ -20,37 +20,3 @@ router.beforeEach((to, from) => {
     transition.value = toIndex < fromIndex ? 'slide-right' : 'slide-left'
 })
 </script>
-
-<style>
-.slide-right-enter-active,
-.slide-right-leave-active,
-.slide-left-enter-active,
-.slide-left-leave-active {
-    will-change: transform;
-    transition: all 500ms;
-    position: absolute;
-}
-
-.slide-right-enter {
-    opacity: 0;
-    transform: translate3d(-100%, 0, 0);
-}
-
-.slide-right-leave-active {
-    opacity: 0;
-    transform: translate3d(100%, 0, 0);
-}
-
-.slide-left-enter {
-    opacity: 0;
-    transform: translate3d(100%, 0, 0);
-}
-
-.slide-left-leave-active {
-    opacity: 0;
-    transform: translate3d(-100%, 0, 0);
-}
-</style>
-
-<style scoped>
-</style>

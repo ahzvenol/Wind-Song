@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <NavBar title="标题" left-arrow @click-left="router.back()" />
+        <NavBar title="???" left-arrow @click-left="router.back()" />
         <div class="nav-container">
             <Cell class="nav-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
             <Cell class="nav-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
