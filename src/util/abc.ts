@@ -14,8 +14,9 @@ function nodeCompare(note1: string, note2: string) {
     }
     const rank1 = noteRank(note1)
     const rank2 = noteRank(note2)
-    if (rank1 > rank2) return 1
-    else if (rank1 < rank2) return -1
+    // 如果前一个音比后一个音高,返回-1,反之返回1
+    if (rank1 > rank2) return -1
+    else if (rank1 < rank2) return 1
     else return 0
 }
 

@@ -1,10 +1,10 @@
 <template>
     <div class="container">
-        <NavBar title="???" left-arrow @click-left="router.back()" />
-        <div class="nav-container">
-            <Cell class="nav-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
-            <Cell class="nav-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
-            <Cell class="nav-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
+        <NavBar title="练耳" left-arrow @click-left="router.back()" />
+        <div class="cell-container">
+            <Cell class="cell-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
+            <Cell class="cell-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
+            <Cell class="cell-block" title="Pitch Judgment" is-link to="/ear-training/pitch-judgment" size="large" />
         </div>
     </div>
 </template>
@@ -13,7 +13,6 @@
 import { NavBar } from 'vant'
 import { Cell } from 'vant'
 import router from '@/router'
-// import { Collapse, CollapseItem } from 'vant';
 
 </script>
 
@@ -24,7 +23,7 @@ import router from '@/router'
     height: 100%;
 }
 
-.nav-container {
+.cell-container {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
@@ -32,7 +31,7 @@ import router from '@/router'
     background-color: #F7F8FA;
 }
 
-.nav-block {
+.cell-block {
     margin: 0 0 12px;
     font-weight: 600;
     font-size: 14px;

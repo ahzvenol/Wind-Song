@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar title="标题" left-arrow @click-left="router.back()" />
+        <NavBar title="音高听辨练习" left-arrow @click-left="router.back()" />
         <div id="abcjs-container" style="pointer-events: none;">
             <div v-show="inputColorMode === 0" id="abcjs-empty" ref="empty">
                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" role="img" fill="currentColor" stroke="currentColor"
@@ -36,7 +36,7 @@
             <div v-show="inputColorMode !== 0" id="abcjs-svg" ref="svg"></div>
         </div>
         <div id="button-container">
-            <div id="button" @click="play()">开始</div>
+            <div id="button" @click="play()">播放</div>
         </div>
         <div id="input-container">
             <PasswordInput id="input" :value="input" :length="length - 1" :gutter="10" :mask="false" :focused="true" />
@@ -55,7 +55,6 @@
                 </div>
             </div>
         </div>
-        <!-- <NumberKeyboard show="true" /> -->
     </div>
 </template>
 
@@ -69,7 +68,7 @@ import { ArrayUtils, getRandomInt, sliding, withFilter } from '@/util'
 import { nodeCompare } from '@/util/abc'
 
 const svg = ref()
-// const empty = ref()
+
 const input = ref("")
 
 const answer = reactive<Array<number>>([])
@@ -124,7 +123,7 @@ const notes = Array(length.value).fill("")
     })
 
 const correctAnswer = sliding(notes, 2).map(e => nodeCompare(e[0], e[1]))
-
+console.log(correctAnswer);
 const synth = new abcjs.synth.CreateSynth()
 const audio = new Audio()
 
