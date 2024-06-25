@@ -45,7 +45,19 @@ const active = ref(0)
     color: white;
     background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
 
+    :deep(.van-cell__title) {
+        display: flex;
+        align-items: center;
+        span {
+            display: block;
+        }
+    }
+
     :deep(.van-cell__right-icon) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 35px;
         color: white !important;
     }
 }

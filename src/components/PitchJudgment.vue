@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar title="音高听辨练习" left-arrow @click-left="router.back()" />
+        <NavBar title="音高听辨练习" left-arrow @click-left="router.back()" right-text="下一题" @click-right="next" />
         <div id="abcjs-container" style="pointer-events: none;">
             <div v-show="inputColorMode === 0" id="abcjs-empty" ref="empty">
                 <svg xmlns:xlink="http://www.w3.org/1999/xlink" role="img" fill="currentColor" stroke="currentColor"
@@ -123,7 +123,7 @@ const notes = Array(length.value).fill("")
     })
 
 const correctAnswer = sliding(notes, 2).map(e => nodeCompare(e[0], e[1]))
-console.log(correctAnswer);
+console.log(correctAnswer)
 const synth = new abcjs.synth.CreateSynth()
 const audio = new Audio()
 
@@ -145,6 +145,14 @@ onMounted(async () => {
     audio.src = synth.download()
     audio.playbackRate = 2
 })
+
+function next() {
+    router.push({
+        path: '/ear-training/pitch-judgment', replace: true, query: {
+            t: Date.now(),
+        }
+    })
+}
 
 </script>
 
