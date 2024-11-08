@@ -139,7 +139,7 @@ onMounted(async () => {
     const visualObj = abcjs.renderAbc(svg.value, abcHeaders + notes.join(" ") + "|")
     await synth.init({
         visualObj: visualObj[0],
-        options: { soundFontUrl: '/soundfonts', }
+        options: { soundFontUrl: '/Wind-Song/soundfonts', }
     })
     await synth.prime()
     audio.src = synth.download()
