@@ -14,7 +14,6 @@
     "axios": "^1.4.0",
     "rollup": "^3.28.0",
     "vant": "^4.8.11",
-    "vite-plugin-cdn-import": "^0.3.5",
     "vue": "^3.3.4",
     "vue-router": "^4.3.2"
   },
